@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem
+        id="menu_fastlog_wms_root"
+        name="Fastlog WMS"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_fastlog_wms_config"
+        name="Konfiguration"
+        parent="menu_fastlog_wms_root"
+        action="action_fastlog_wms_config"
+        sequence="10"/>
+</odoo>

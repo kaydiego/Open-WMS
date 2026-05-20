@@ -1,0 +1,18 @@
+Lizenz-Platzhalter / License placeholder
+========================================
+
+Die endgültige Lizenz für den Fastlog-eigenen Code in diesem Repository ist
+noch nicht festgelegt und MUSS durch Fastlog Legal / CISO bestätigt werden,
+bevor dieses Repository an Dritte weitergegeben oder veröffentlicht wird.
+
+Hintergrund
+-----------
+
+Dieses Repository enthält ausschliesslich Fastlog-eigenen Code. Die externe
+Abhängigkeit Odoo Community Edition steht unter der LGPL-3.0 und wird hier
+nicht mitgeliefert, sondern zur Laufzeit über das offizielle Docker-Image
+(odoo:17) eingebunden. Änderungen am Odoo-Kern oder an LGPL-Modulen sind
+nach LGPL-3.0 weiterzugeben; eigene Addons können unabhängig lizenziert
+werden.
+
+Bis zur formellen Freigabe gilt: "All rights reserved, Fastlog AG."

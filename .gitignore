@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Odoo
+*.pot
+*.mo
+
+# Docker / lokale Volumes
+docker/volumes/
+docker/.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets (siehe Fastlog KI-Nutzungspolicy: niemals committen)
+*.pem
+*.key
+secrets/
+.env
+.env.local
