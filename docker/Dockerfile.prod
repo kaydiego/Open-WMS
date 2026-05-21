@@ -1,0 +1,8 @@
+FROM odoo:17.0
+
+USER root
+COPY --chown=odoo:odoo addons/fastlog_wms /mnt/extra-addons/fastlog_wms
+COPY --chown=odoo:odoo docker/odoo.prod.conf /etc/odoo/odoo.conf
+USER odoo
+
+EXPOSE 8069 8072
