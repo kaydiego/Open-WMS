@@ -1,57 +1,31 @@
-# Open-WMS (Fastlog)
+# Fastlog WMS auf Odoo – Dokumentations-Set (Entwurf)
 
-Fastlog-WMS auf Basis des Odoo-`stock`-Datenmodells. Dieses Repository enthält
-**ausschliesslich** den Fastlog-spezifischen Code als Odoo-Addon. Odoo selbst
-wird als externe Abhängigkeit über Docker bereitgestellt — wir vendoren den
-Upstream-Code nicht.
+Dieser Ordner ist ein **Vorschlag** für die Architektur- und Projekt-
+Dokumentation des neuen Fastlog-WMS auf Odoo-Basis. Die Inhalte sind so
+geschrieben, dass sie 1:1 in das künftige eigenständige Repository
+(`primelog-odoo` o. ä.) übernommen werden können.
 
-## Architektur in einem Satz
+## Lesereihenfolge
 
-Odoo Community Edition liefert das Datenmodell (`stock.move`, `stock.quant`,
-`stock.picking`, `stock.lot`, …), das Modul `addons/fastlog_wms` erweitert es
-um Fastlog-spezifische Felder, Logik, Views und Reports.
+1. `CLAUDE.md` – Projekt-Guide für Claude Code, kompakt
+2. `ARCHITECTURE.md` – Gesamtbild, Schichten, Microservices, Anti-Corruption-Layer
+3. `adr/0001-odoo-as-data-backbone.md` – Warum Odoo nur als Datenunterbau
+4. `adr/0002-microservice-architecture.md` – Service-Schnitt
+5. `adr/0003-custom-frontend.md` – Warum eigenes UI statt Odoo-Web
+6. `SECURITY.md` – Secure-by-Design, Authn/Authz, Audit, Mapping auf Fastlog-KI-Policy
+7. `FRONTEND.md` – UI-Stack, Design System, PWA für Lager-Scanner
+8. `API-GUIDELINES.md` – Standards für synchrone APIs und Events
+9. `GLOSSARY.md` – einheitliche Begriffe DE/EN
 
-Die ausführliche Begründung steht in
-[`docs/adr/0001-odoo-stock-als-datenunterbau.md`](docs/adr/0001-odoo-stock-als-datenunterbau.md).
+## Status
 
-## Repository-Layout
+Entwurf. Inhalte abgleichen mit:
 
-```
-Open-WMS/
-├── addons/
-│   └── fastlog_wms/          Unser Odoo-Addon (depends = ['stock'])
-├── docker/
-│   ├── docker-compose.yml    Odoo 17 + PostgreSQL 15 lokal
-│   └── odoo.conf
-├── docs/
-│   ├── adr/                  Architecture Decision Records
-│   └── architecture/         Diagramme, Übersichten
-├── LICENSE
-└── README.md
-```
+- Fastlog KI-Nutzungspolicy V1.0
+- Legal / CISO Freigabe für Odoo Community LGPL-3.0
+- Endgültige Lizenzwahl für Fastlog-Code
 
-## Lokales Setup
+## Nicht im Set
 
-Voraussetzungen: Docker + Docker Compose.
-
-```bash
-cd docker
-docker compose up -d
-# Odoo läuft danach auf http://localhost:8069
-# beim ersten Login eine Datenbank anlegen und das Modul "Fastlog WMS" installieren
-```
-
-Das Addon-Verzeichnis `../addons` wird per Bind-Mount in den Odoo-Container
-gemountet — Änderungen werden nach `docker compose restart odoo` aktiv.
-
-## Beitrag / Workflow
-
-- Entwicklung auf Feature-Branches, Reviews via Pull Request.
-- ADRs ergänzen, wenn architektonisch relevante Entscheidungen anstehen.
-- **Keine** Personendaten, Kunden- oder Vertragsdaten in Repo oder Issues
-  einchecken (siehe Fastlog KI-Nutzungspolicy V1.0, Abschnitt 1).
-
-## Lizenz
-
-Siehe [`LICENSE`](LICENSE). Die endgültige Lizenzwahl für den Fastlog-Anteil
-ist durch Legal/CISO freizugeben (siehe ADR-0001, "Offene Punkte").
+- Konkrete Produkt-Roadmap → gehört ins Backlog, nicht in Architektur-Docs
+- Operative Runbooks → kommen mit dem Hosting-Konzept
