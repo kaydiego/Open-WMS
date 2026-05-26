@@ -1,4 +1,4 @@
-name: Deploy Dev
+name: Deploy
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: deploy-dev
+  group: deploy
   cancel-in-progress: false
 
 permissions:
@@ -16,7 +16,7 @@ env:
   IMAGE_NAME: fastlog-wms
   ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
   AZURE_RG: ${{ secrets.AZURE_RESOURCE_GROUP }}
-  AZURE_APP_DEV: ${{ secrets.AZURE_CONTAINERAPP_DEV }}
+  AZURE_APP: ${{ secrets.AZURE_CONTAINERAPP }}
 
 jobs:
   test:
@@ -53,17 +53,14 @@ jobs:
             -i fastlog_wms --without-demo=all \
             --log-level=test
 
-  build-and-push:
-    name: Build & Push
+  deploy:
+    name: Build, Push & Deploy
     needs: test
     runs-on: ubuntu-latest
-    outputs:
-      image_tag: ${{ steps.meta.outputs.image_tag }}
     steps:
       - uses: actions/checkout@v4
 
       - id: meta
-        name: Compute image tag
         run: echo "image_tag=${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
 
       - uses: azure/login@v2
@@ -79,30 +76,18 @@ jobs:
           TAG="${{ steps.meta.outputs.image_tag }}"
           docker build -f docker/Dockerfile.prod \
             -t "$IMAGE:$TAG" \
-            -t "$IMAGE:dev-latest" .
+            -t "$IMAGE:latest" .
           docker push "$IMAGE:$TAG"
-          docker push "$IMAGE:dev-latest"
-
-  deploy-dev:
-    name: Deploy Dev (Azure Container Apps)
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    environment: dev
-    steps:
-      - uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          docker push "$IMAGE:latest"
 
       - name: Update Container App
         run: |
           az containerapp update \
-            --name "$AZURE_APP_DEV" \
+            --name "$AZURE_APP" \
             --resource-group "$AZURE_RG" \
-            --image "$ACR_LOGIN_SERVER/$IMAGE_NAME:${{ needs.build-and-push.outputs.image_tag }}"
+            --image "$ACR_LOGIN_SERVER/$IMAGE_NAME:${{ steps.meta.outputs.image_tag }}"
 
       - name: Summary
         run: |
-          echo "### Dev deployed :rocket:" >> "$GITHUB_STEP_SUMMARY"
-          echo "Image: \`$ACR_LOGIN_SERVER/$IMAGE_NAME:${{ needs.build-and-push.outputs.image_tag }}\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Promotion nach Prod: Actions → **Deploy Prod** → Run workflow (Tag-Default: \`dev-latest\`)" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Deployed :rocket:" >> "$GITHUB_STEP_SUMMARY"
+          echo "Image: \`$ACR_LOGIN_SERVER/$IMAGE_NAME:${{ steps.meta.outputs.image_tag }}\`" >> "$GITHUB_STEP_SUMMARY"
